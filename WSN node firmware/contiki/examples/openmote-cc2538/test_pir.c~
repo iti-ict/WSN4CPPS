@@ -1,0 +1,107 @@
+/**
+ * \rponce probes
+ * @{
+ *
+ * \defgroup test ADC + 1-wire
+ *
+ * Demonstrates the operation of ADC and 1-wire
+ * @{
+ *
+ * \file
+ *        RE-Mote 
+ *
+ * \author
+ *         Rubén Ponce <rponce@iti.es>
+ */
+
+/*---------------------------------------------------------------------------*/
+#include "contiki.h"
+#include "sys/etimer.h"
+#include "sys/rtimer.h"
+
+#include "dev/leds.h"
+#include "dev/gpio.h"
+#include "dev/button-sensor.h"
+
+#include "lpm.h"
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <math.h>
+
+
+/*---------------------------------------------------------------------------*/
+void readpin(void);
+
+static uint8_t presence = 0;
+static struct etimer et;
+
+#define LOOP_PERIOD 2
+#define LOOP_INTERVAL (CLOCK_SECOND * LOOP_PERIOD)
+
+#define PIN_MASK   GPIO_PIN_MASK(0) // Predetermined GPIO PIN0
+#define PORT_BASE  GPIO_PORT_TO_BASE(3) // Predetermined GPIO PORT D
+
+/*---------------------------------------------------------------------------*/
+PROCESS(test, "GPIO read");
+PROCESS(leds, "leds");
+AUTOSTART_PROCESSES(&test, &leds);
+
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(test, ev, data)
+{
+  PROCESS_BEGIN(); 
+  SENSORS_ACTIVATE(button_sensor);
+  GPIO_DETECT_EDGE(PORT_BASE, PIN_MASK);
+
+  /* Both Edges */
+  GPIO_TRIGGER_BOTH_EDGES(PORT_BASE, PIN_MASK);
+
+  GPIO_ENABLE_INTERRUPT(PORT_BASE, PIN_MASK);
+  gpio_port_d_isr();
+  
+  while(1) {
+    PROCESS_YIELD();
+    readpin();
+    lpm_enter();
+  } /* Loop forever */
+/*----------------------------------------------------------------------*/
+/* End of program */
+/*----------------------------------------------------------------------*/
+  PROCESS_END();
+}
+
+PROCESS_THREAD(leds, ev, data)
+{
+  PROCESS_BEGIN(); 
+  etimer_set(&et, LOOP_INTERVAL);
+  leds_on(LEDS_BLUE);
+
+  while(1) {
+    PROCESS_WAIT_EVENT_UNTIL(ev == PROCESS_EVENT_TIMER);
+    leds_toggle(LEDS_BLUE);
+    lpm_enter();
+    etimer_set(&et, LOOP_INTERVAL);
+  } /* Loop forever */
+/*----------------------------------------------------------------------*/
+/* End of program */
+/*----------------------------------------------------------------------*/
+  PROCESS_END();
+}
+
+
+
+/*---------------------------------------------------------------------------*/
+void readpin(void)
+{
+  presence =  GPIO_READ_PIN(PORT_BASE, PIN_MASK); //Return value of line
+  if(presence)
+    leds_on(LEDS_GREEN);
+  
+  else
+    leds_off(LEDS_GREEN);
+        
+  printf("\n Presencia =  %d \n", presence); 
+
+}

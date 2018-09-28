@@ -1,0 +1,104 @@
+/**
+ * \file
+ *         Energywatch: periodically get stats on energy remaining for nodes
+ * \author
+ *         David Todoli <dtodoli@iti.es>
+ */
+
+#include "contiki.h"
+#include "contiki-lib.h"
+#include "sys/compower.h"
+#include "energywatch.h"
+#include "net/rime/rime.h"
+
+#include <stdio.h>
+#include <string.h>
+
+/*********** battery information **************/
+#define BATTERYFULL  2880000
+static float bat=BATTERYFULL;
+struct energy_time {
+  unsigned long cpu;
+  unsigned long transmit;
+  unsigned long listen;
+};
+
+static struct energy_time last;
+static struct energy_time diff;
+
+static short int PTX=24; //mA potencia tx radio CC2538
+static short int PRX=20; //mA potencia rx radio CC2538
+static float PCPU=0.0013; //1.3uA potencia CPU CC2538 en LPM2 -> check what LPM it is working in
+/*****************end bat**********************/
+
+PROCESS(energytrace_process, "Periodic energy output");
+/*---------------------------------------------------------------------------*/
+float 
+energy_stats(int time)
+{
+  
+  bat = bat - (diff.transmit*PTX + diff.listen*PRX + diff.cpu*PCPU)/(RTIMER_SECOND*time);/*dividir por 2segundos que es el periodo de envio*/
+  left=bat/3600;
+ // consum=(diff.transmit*PTX + diff.listen*PRX + diff.cpu*PCPU)/(RTIMER_SECOND*PERIOD);
+
+ // PRINTF("DATA send to %d 'Battery info p_number %d'\n", server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id);
+ //PRINTF("\nDATA send 'Battery info: tx-%lu rx-%ld cpu- %lu'\n", (unsigned long) 1000*diff.transmit/RTIMER_SECOND, (unsigned long) 1000*diff.listen/RTIMER_SECOND, (unsigned long) (1000*diff.cpu/RTIMER_SECOND));
+
+ // PRINTF("DATA send 'Battery consumed: %ld.%03d'\n", (long) (consum), (unsigned) (((consum)-floor(consum))*1000));
+
+  //PRINTF("Battery: %ld.%05d mAh left\n",(long) (left), (unsigned) (((left)-floor(left))*100000));
+
+  left=left*100/(BATTERYFULL/3600);
+ // PRINTF("Battery level percent : %ld.%05d %%\n",(long) (left), (unsigned) (((left)-floor(left))*100000));
+
+  metric=100/left;
+ // PRINTF("Metric level battery : %ld.%05d \n",(long) (metric), (unsigned) (((metric)-floor(metric))*100000));
+
+  return metric;
+}
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(energytrace_process, ev, data)
+{
+  PROCESS_BEGIN();
+
+  energest_init();
+ /* Energy time init */
+  last.cpu = energest_type_time(ENERGEST_TYPE_CPU);
+  last.transmit = energest_type_time(ENERGEST_TYPE_TRANSMIT);
+  last.listen = energest_type_time(ENERGEST_TYPE_LISTEN);
+
+  while(1) {
+      PROCESS_YIELD();
+  /*-----------------power consumption----------------------*/
+    ENERGEST_OFF(ENERGEST_TYPE_CPU);
+    ENERGEST_ON(ENERGEST_TYPE_CPU);
+    ENERGEST_OFF(ENERGEST_TYPE_TRANSMIT);
+    ENERGEST_ON(ENERGEST_TYPE_TRANSMIT);
+
+    /* Energy time diff */
+
+    diff.cpu = energest_type_time(ENERGEST_TYPE_CPU) - last.cpu;
+    diff.transmit = energest_type_time(ENERGEST_TYPE_TRANSMIT) - last.transmit;
+    diff.listen = energest_type_time(ENERGEST_TYPE_LISTEN) - last.listen;
+    last.cpu = energest_type_time(ENERGEST_TYPE_CPU);
+    last.transmit = energest_type_time(ENERGEST_TYPE_TRANSMIT);
+    last.listen = energest_type_time(ENERGEST_TYPE_LISTEN);
+/*-----------------------------------------------------------------*/
+  }
+
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
+void
+energytrace_start(clock_time_t period)
+{
+  process_start(&energytrace_process, (void *)&period);
+}
+/*---------------------------------------------------------------------------*/
+void
+energytrace_stop(void)
+{
+  process_exit(&energytrace_process);
+}
+/*---------------------------------------------------------------------------*/
+

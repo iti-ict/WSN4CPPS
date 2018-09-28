@@ -1,0 +1,86 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/form-tools">Configuration</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/form-tools">External APPS</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+       
+    </div>
+</div>
+<h3 class="page-title"> Config Tools
+    <small>for external Apps</small>
+</h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>External Apps address Configuration </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="#" data-toggle="modal" class="config"> </a>
+                    <a href="javascript:;" class="reload"> </a>
+                    <a href="javascript:;" class="remove"> </a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form action="#" id="form-username" class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">MQTT ready app</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_1" name="typeahead_example_1" class="form-control" /> </div>
+                            
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">OPC-UA ready app (client)</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_2" name="typeahead_example_2" class="form-control" /> </div>
+                            
+                            
+                        </div>
+                    </div>
+
+                                       
+
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn purple">
+                                    <i class="fa fa-check"></i> Submit</button>
+                                <button type="button" class="btn default">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+        <!-- END PORTLET-->
+    </div>
+</div>
+
+<!-- END MAIN CONTENT -->
+<script>
+    ComponentsFormTools.init(); // init todo page
+</script>

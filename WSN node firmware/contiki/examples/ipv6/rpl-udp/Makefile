@@ -1,0 +1,26 @@
+all: udp-client udp-server
+CONTIKI=../../..
+
+CFLAGS += -DPROJECT_CONF_H=\"project-conf.h\"
+MODULES += core/net/mac/tsch
+PROJECT_SOURCEFILES += collect-common.c relay.c adxl345.c jc10f.c DS18B20.c adc-sensors.c ext-led.c
+APPS+=orchestra powertrace collect-view
+ifdef WITH_COMPOWER
+APPS+=powertrace collect-view
+CFLAGS+= -DCONTIKIMAC_CONF_COMPOWER=1 -DWITH_COMPOWER=1 -DQUEUEBUF_CONF_NUM=4
+endif
+
+ifdef SERVER_REPLY
+CFLAGS+=-DSERVER_REPLY=$(SERVER_REPLY)
+endif
+ifdef PERIOD
+CFLAGS+=-DPERIOD=$(PERIOD)
+endif
+
+ifeq ($(MAKE_WITH_NON_STORING),1)
+CFLAGS += -DWITH_NON_STORING=1
+endif
+
+CONTIKI_WITH_IPV6 = 1
+
+include $(CONTIKI)/Makefile.include

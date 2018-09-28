@@ -1,0 +1,211 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/form-tools">Configuration</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/form-tools">Networks</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+       
+    </div>
+</div>
+<h3 class="page-title"> Config Tools
+    <small>for network servers and services</small>
+</h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PORTLET-->
+        <div class="portlet box red-sunglo">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>MQTT Service Configuration </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="#" data-toggle="modal" class="config"> </a>
+                    <a href="javascript:;" class="reload"> </a>
+                    <a href="javascript:;" class="remove"> </a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form action="#" id="form-username" class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Broker address</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_1" name="typeahead_example_1" class="form-control" /> </div>
+                            <p class="help-block"> E.g: test.mosquitto.org
+                               
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Port</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_2" name="typeahead_example_2" class="form-control" /> </div>
+                            <p class="help-block"> E.g: 1883</code>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Client ID</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_3" name="typeahead_example_3" class="form-control" /> </div>
+                            <p class="help-block"> E.g: client-WSN-UI</code>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="col-sm-3 control-label">Username</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_4" name="typeahead_example_4" class="form-control" /> </div>
+                            <p class="help-block"> In case Authorization is enabled. </p>
+                        </div>
+                    </div>
+                                        <div class="form-group ">
+                        <label class="col-sm-3 control-label">Password</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_4" name="typeahead_example_4" class="form-control" /> </div>
+                            <p class="help-block"> In case Authorization is enabled. </p>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn purple">
+                                    <i class="fa fa-check"></i> Submit</button>
+                                <button type="button" class="btn default">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+        <!-- END PORTLET-->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PORTLET-->
+ <div class="portlet box blue-steel">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-gift"></i>OPC-UA Service Configuration </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"> </a>
+                    <a href="#" data-toggle="modal" class="config"> </a>
+                    <a href="javascript:;" class="reload"> </a>
+                    <a href="javascript:;" class="remove"> </a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <form action="#" id="form-username" class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">OPC-UA Server Endpoint address</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_1" name="typeahead_example_1" class="form-control" /> </div>
+                            <p class="help-block"> E.g: opc://wsngateway
+                               
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Port</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_2" name="typeahead_example_2" class="form-control" /> </div>
+                            <p class="help-block"> E.g: 4334</code>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Client ID</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_3" name="typeahead_example_3" class="form-control" /> </div>
+                            <p class="help-block"> E.g: client-WSN-UI</code>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="col-sm-3 control-label">Username</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_4" name="typeahead_example_4" class="form-control" /> </div>
+                            <p class="help-block"> In case Authorization is enabled. </p>
+                        </div>
+                    </div>
+                                        <div class="form-group ">
+                        <label class="col-sm-3 control-label">Password</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                                <input type="text" id="typeahead_example_4" name="typeahead_example_4" class="form-control" /> </div>
+                            <p class="help-block"> In case Authorization is enabled. </p>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-3 col-md-9">
+                                <button type="submit" class="btn purple">
+                                    <i class="fa fa-check"></i> Submit</button>
+                                <button type="button" class="btn default">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+        <!-- END PORTLET-->
+    </div>
+</div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+<script>
+    ComponentsFormTools.init(); // init todo page
+</script>

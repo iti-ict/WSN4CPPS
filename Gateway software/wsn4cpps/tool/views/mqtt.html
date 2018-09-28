@@ -1,0 +1,102 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/file_upload.html">MQTT</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        
+    </div>
+</div>
+<h3 class="page-title"> MQTT
+    <small>Interface for mqtt based applications</small>
+</h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+
+<div class="row" ng-controller="mqttController" >
+    <div class="col-md-4">
+        <!-- BEGIN: ACCORDION DEMO -->
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-settings font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase">Server Info</span>
+                    <span class="caption-helper hide"></span>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle  btn-default" href="/vwalls/" target="_blank">
+                        <i class="icon-cloud-upload"></i> External App
+                    </a>
+                    <a class="btn btn-circle btn-icon-only btn-default" href="#/form-tools">
+                        <i class="icon-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div >
+                    <!-- 3. nv-file-over uploader="link" over-class="className" -->
+                    <div class="file-drop-zone margin-bottom-20" > Broker:{{broker}} <br>Port:{{port}} <br> Version:{{version}}</div>
+                    <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                    <div >
+                        <div class="file-drop-zone margin-bottom-20">Broker Uptime:{{uptime}}<br> Clients connected:{{clientscon}}<br>Max Clients:{{clientsmax}}<br> Messages published:{{mesrx}} <br> Memory Used:{{memo}} MB</div>
+                    </div>
+                </div>
+                 </div>
+        </div>
+        <!-- END: ACCORDION DEMO -->
+    </div>
+    <div class="col-md-8">
+        <!-- BEGIN: ACCORDION DEMO -->
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-settings font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase">Incoming data</span>
+                    <span class="caption-helper">Sensor Nodes streaming: {{ uploader.queue.length }}</span>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable table-scrollable-borderless">
+				 <div style="height: 300px; width: 800px;">
+        <am-chart id="myTempChart" options="amChartOptions"></am-chart>
+                 </div>
+                   <!--<div class="chartcontainer" ng-controller="tempgraphsCtrl">
+                                    <h5><small>Digital variable: {{variable}} ({{mag}})</small></h5>
+                                <canvas id="line" class="chart chart-line" chart-data="data"
+                                    chart-labels="labels" chart-legend="true" chart-dataset-override="datasetOverride" chart-series="series"
+                                    width="620" height="90" style="width:620px;height:90px;">
+                                </canvas> 
+                </div>-->
+
+                </div>
+                 <div class="table-scrollable table-scrollable-borderless">
+				 <div style="height: 300px; width: 800px;">
+        <am-chart id="mypirChart" options="amChartOptionsPIR"></am-chart>
+                 </div>
+                   <!--<div class="chartcontainer" ng-controller="tempgraphsCtrl">
+                                    <h5><small>Digital variable: {{variable}} ({{mag}})</small></h5>
+                                <canvas id="line" class="chart chart-line" chart-data="data"
+                                    chart-labels="labels" chart-legend="true" chart-dataset-override="datasetOverride" chart-series="series"
+                                    width="620" height="90" style="width:620px;height:90px;">
+                                </canvas> 
+                </div>-->
+
+                </div>
+                <button type="button" class="btn btn-success btn-s" >
+                    <span class="glyphicon glyphicon-upload"></span>  IPSO Temperature </button>
+                <button type="button" class="btn btn-warning btn-s" >
+                    <span class="glyphicon glyphicon-upload"></span> IPSO Presence detector </button>
+              
+            </div>
+        </div>
+        <!-- END: ACCORDION DEMO -->
+    </div>
+</div>
+<!-- END MAIN CONTENT -->

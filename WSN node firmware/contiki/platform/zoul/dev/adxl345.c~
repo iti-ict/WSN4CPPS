@@ -1,0 +1,346 @@
+/*---------------------------------------------------------------------------*/
+/**
+ * \file
+ *         Device drivers for adxl345 accelerometer in Zolertia RE-Mote.
+ * \author
+ *         Rubén Ponce <rponce@iti.es> 
+ */
+/*---------------------------------------------------------------------------*/
+#include <stdio.h>
+#include "contiki.h"
+#include "adxl345_drivers.h"
+#include "dev/i2c.h"
+#include "dev/gpio.h"
+#include "lib/sensors.h"
+ #include "dev/watchdog.h"
+/*---------------------------------------------------------------------------*/
+#define DEBUG 0
+#if DEBUG
+#define PRINTF(...) printf(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
+
+static uint8_t pinCS = 0; // Predetermined GPIO PIN0
+static uint8_t portCS = 3; // Predetermined GPIO PORT D
+#define PIN   GPIO_PIN_MASK(pinCS)
+#define PORT  GPIO_PORT_TO_BASE(portCS)
+
+/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+static uint8_t enabled;
+/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+/* Bitmasks for the interrupts */
+static uint16_t int1_mask = 0, int2_mask = 0;
+
+/* Default values for adxl345 at startup.
+ * This will be sent to the adxl345 in a
+ * stream at init to set it up in a default state
+ */
+
+
+/*---------------------------------------------------------------------------*/
+PROCESS(accmeter_process, "Accelerometer process");
+/*---------------------------------------------------------------------------*/
+
+void
+accm_write_reg(uint8_t reg, uint8_t val)
+{
+  uint8_t tx_buf[] = {reg, val};
+
+  i2c_master_enable();
+  i2c_burst_send(ADXL345_ADDR, tx_buf, 2);
+  PRINTF("ADXL345: WRITE_REG 0x%02X @ reg 0x%02X\n", val, reg);
+}
+/*---------------------------------------------------------------------------*/
+uint8_t
+accm_read_reg(uint8_t reg)
+{
+  uint8_t retVal = 0;
+  uint8_t rtx = reg;
+  uint8_t *pointer = &reg;
+  PRINTF("ADXL345: READ_REG 0x%02X\n", rtx);
+
+  i2c_master_enable();
+  if(i2c_single_send(ADXL345_ADDR, rtx) == I2C_MASTER_ERR_NONE) {
+
+    if(i2c_burst_receive(ADXL345_ADDR, pointer, 1) == I2C_MASTER_ERR_NONE) {
+
+      PRINTF("ADXL345: ADXL345_SUCCESS\n");
+    }
+  }  
+  return retVal;
+}
+
+/*---------------------------------------------------------------------------*/
+
+uint16_t
+accm_read_axis(enum ADXL345_AXIS axis)
+{
+  uint16_t rd = 0;
+  uint8_t tmpL = 0;
+  uint8_t tmpH = 0;
+  if(axis > Z_AXIS){
+    return 0;
+  }
+  switch (axis)
+  {
+    case X_AXIS:
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAX0);
+    i2c_single_receive(ADXL345_ADDR, &tmpL);
+
+    while(i2c_master_busy());
+
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAX1);
+    i2c_single_receive(ADXL345_ADDR, &tmpH);
+    while(i2c_master_busy());
+    break;
+
+    case Y_AXIS:
+    //tmpL = accm_read_reg(ADXL345_DATAY0);
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAY0);
+    i2c_single_receive(ADXL345_ADDR, &tmpL);
+
+    while(i2c_master_busy());
+    
+    //tmpH = accm_read_reg(ADXL345_DATAY1);
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAY1);
+    i2c_single_receive(ADXL345_ADDR, &tmpH);
+    while(i2c_master_busy());
+    break;
+
+    case Z_AXIS:
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAZ0);
+    i2c_single_receive(ADXL345_ADDR, &tmpL);
+
+    while(i2c_master_busy());
+    
+    i2c_single_send(ADXL345_ADDR, ADXL345_DATAZ1);
+    i2c_single_receive(ADXL345_ADDR, &tmpH);
+    while(i2c_master_busy());
+    break;
+
+    default:
+    rd = 0;
+    break;
+  }
+  
+  rd = (uint16_t)(tmpL | (tmpH << 8));    
+  return rd;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////*
+//uint16_t
+//accm_read_axis(enum ADXL345_AXIS axis)
+//{
+//  uint16_t rd = 0;
+// uint8_t buff[6];
+//  uint16_t valueX = 0;
+//  uint16_t valueY = 0;
+//  uint16_t valueZ = 0;
+
+//  i2c_single_send(ADXL345_ADDR, ADXL345_DATAX0); // Poner en init
+//  i2c_burst_receive(ADXL345_ADDR, buff ,6);  
+//  while(i2c_master_busy());
+  
+//  valueX = (uint16_t)((buff[1] << 8) | buff[0]);  
+//  valueY= (uint16_t)((buff[3] << 8) | buff[2]);
+//  valueZ= (uint16_t)((buff[5] << 8) | buff[4]);
+
+//  if(axis > Z_AXIS){
+//    return 0;
+//  }
+//  switch (axis)
+//  {
+//    case X_AXIS:
+//    rd = valueX;
+//    break;
+
+//    case Y_AXIS:
+//    rd = valueY;
+//    break;
+
+//    case Z_AXIS:
+//    rd = valueZ;
+//    break;
+
+//    default:
+//    rd = 0;
+//    break;
+//  }
+//  return rd;
+//}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*---------------------------------------------------------------------------*/
+int
+accm_set_grange(uint8_t grange)
+{
+  uint8_t tempreg = 0;
+
+  if(grange > ADXL345_RANGE_16G) {
+    PRINTF("ADXL345: grange invalid: %u\n", grange);
+    return ADXL345_ERROR;
+  }
+
+  if(!enabled) {
+    return ADXL345_ERROR;
+  }
+
+  /* Keep the previous contents of the register, zero out the last two bits */
+  tempreg = (accm_read_reg(ADXL345_DATA_FORMAT) & 0xFC);
+  tempreg |= grange; 
+  tempreg |= 0x08; // to make sure that the FULL-RES bit is enable for range Scaling -> always 0.004 g * LSB
+  accm_write_reg(ADXL345_DATA_FORMAT, tempreg);
+  return ADXL345_SUCCESS;
+}
+
+/*---------------------------------------------------------------------------*/
+void
+accm_init(void)
+{
+  PRINTF("ADXL345: init\n");
+
+
+  /* Set up ports and pins for interrups. */
+  i2c_init(I2C_SDA_PORT, I2C_SDA_PIN, I2C_SCL_PORT, I2C_SCL_PIN, I2C_SCL_FAST_BUS_SPEED);
+
+  /* Set up ports and pins for I2C communication */
+  i2c_master_enable();
+
+  /* set default register values. */
+
+  i2c_single_send(ADXL345_ADDR, ADXL345_THRESH_TAP);
+  i2c_single_send(ADXL345_ADDR, ADXL345_THRESH_TAP_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_OFSX_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_OFSY_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_OFSZ_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_DUR_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_LATENT_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_WINDOW_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_THRESH_ACT_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_THRESH_INACT_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_TIME_INACT_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_ACT_INACT_CTL_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_THRESH_FF_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_TIME_FF_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_TAP_AXES_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_BW_RATE);
+  i2c_single_send(ADXL345_ADDR, ADXL345_BW_RATE_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_POWER_CTL_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_INT_ENABLE_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_INT_MAP_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_DATA_FORMAT_DEFAULT);
+  i2c_single_send(ADXL345_ADDR, ADXL345_FIFO_CTL_DEFAULT);
+
+  enabled = 1;
+  accm_set_pin_cs(PORT, PIN, enabled);
+
+  accm_set_grange(ADXL345_RANGE_2G); 
+}
+/*---------------------------------------------------------------------------*/
+void
+accm_stop(void)
+{
+  accm_write_reg(ADXL345_INT_ENABLE, ~(int1_mask | int2_mask));
+  accm_write_reg(ADXL345_INT_MAP, ~int2_mask);
+  enabled = 0;
+}
+/*---------------------------------------------------------------------------*/
+int
+accm_set_irq(uint8_t int1, uint8_t int2)
+{
+  if(!enabled) {
+    return ADXL345_ERROR;
+  }
+
+  /* Set the corresponding interrupt mapping to INT1 or INT2 */
+  PRINTF("ADXL345: IRQs set to INT1: 0x%02X IRQ2: 0x%02X\n", int1, int2);
+
+  int1_mask = int1;
+  int2_mask = int2;
+
+  accm_write_reg(ADXL345_INT_ENABLE, (int1 | int2));
+  /* int1 bits are zeroes in the map register so this is for both ints */
+  accm_write_reg(ADXL345_INT_MAP, int2);
+  return ADXL345_SUCCESS;
+}/*---------------------------------------------------------------------------*/
+ void accm_set_pin_cs(uint8_t port, uint8_t pin, uint8_t value)
+ {
+  if (value == 1)
+    GPIO_SET_PIN(port, pin);
+  else if (value == 0)
+    GPIO_CLR_PIN(port, pin);
+ }
+/*---------------------------------------------------------------------------*/
+static int
+configure(int type, int value)
+{
+  if(type != SENSORS_ACTIVE) {
+    return ADXL345_ERROR;
+  }
+
+  if(value) {
+    accm_init();
+  } else {
+    accm_stop();
+  }
+  enabled = value;
+  return ADXL345_SUCCESS;
+}
+/*---------------------------------------------------------------------------*/
+static int
+status(int type)
+{
+  switch(type) {
+  case SENSORS_ACTIVE:
+  case SENSORS_READY:
+    return enabled;
+  }
+  return ADXL345_SUCCESS;
+}
+/*---------------------------------------------------------------------------*/
+/* Read an axis of the accelerometer (x, y or z). Return value is a signed
+ * 10 bit int.
+ * The resolution of the acceleration measurement can be increased up to 13 bit,
+ * but will change the data format of this read out. Refer to the data sheet if
+ * so is wanted/needed.
+ * Read in Two complement
+ */
+static int
+value(int type)
+{
+  if(!enabled) {
+    return ADXL345_ERROR;
+  }
+
+  if((type != X_AXIS) && (type != Y_AXIS) && (type != Z_AXIS)) {
+    return ADXL345_ERROR;
+  }
+
+  switch(type) {
+    case X_AXIS:
+      return accm_read_axis(X_AXIS);
+    case Y_AXIS:
+      return accm_read_axis(Y_AXIS);
+    case Z_AXIS:
+      return accm_read_axis(Z_AXIS);
+    default:
+      return ADXL345_ERROR;
+  }
+}
+/*---------------------------------------------------------------------------*/
+/* This process is sleeping until an interrupt from the accelerometer occurs,
+ * which polls this process from the interrupt service routine. */
+PROCESS_THREAD(accmeter_process, ev, data)
+{
+  PROCESS_BEGIN();
+  while(1){
+    PROCESS_WAIT_EVENT_UNTIL(0);
+  }
+  PROCESS_END();
+}
+/*---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------*/
+SENSORS_SENSOR(adxl345, ADXL345_SENSOR, value, configure, status);
+/*---------------------------------------------------------------------------*/

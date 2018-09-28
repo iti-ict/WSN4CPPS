@@ -1,0 +1,13 @@
+DEFINES+=PROJECT_CONF_H=\"project-conf.h\"
+
+all: mqtt-demo
+
+CONTIKI_WITH_IPV6 = 1
+CFLAGS += -DUIP_CONF_TCP=1
+
+
+APPS += mqtt orchestra
+MODULES += core/net/mac/tsch
+
+CONTIKI = ../../..
+include $(CONTIKI)/Makefile.include

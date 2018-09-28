@@ -1,0 +1,105 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <a href="#/dashboard.html">Home</a>
+            <i class="fa fa-circle"></i>
+        </li>
+        <li>
+            <a href="#/file_upload.html">OPCUA</a>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        
+    </div>
+</div>
+<h3 class="page-title"> OPCUA
+    <small>Interface for opcua based applications</small>
+</h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div class="row" ng-controller="opcuaController" >
+    <div class="col-md-4">
+        <!-- BEGIN: ACCORDION DEMO -->
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-settings font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase">Server Info</span>
+                    <span class="caption-helper hide"></span>
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle  btn-default" href="/opcuahmi">
+                        <i class="icon-cloud-upload"></i> External App
+                    </a>
+                    <a class="btn btn-circle btn-icon-only btn-default" href="#">
+                        <i class="icon-wrench"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div >
+                    
+                    <div class="file-drop-zone margin-bottom-20" > Opcua endpoint: opc://wsngw Port:3000 </div>
+                    
+                   
+                </div>
+                 </div>
+        </div>
+        <!-- END: ACCORDION DEMO -->
+    </div>
+    <div class="col-md-8">
+        <!-- BEGIN: ACCORDION DEMO -->
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption font-green-sharp">
+                    <i class="icon-settings font-green-sharp"></i>
+                    <span class="caption-subject bold uppercase">Incoming data</span>
+                    <span class="caption-helper">Sensor Nodes streaming: </span>
+                </div>
+
+            </div>
+            <div class="portlet-body">
+                <div class="table-scrollable table-scrollable-borderless">
+                   
+                </div>
+                <div>
+                    <div id="field"></div>
+                    <div id="content"></div>
+                    <div id="info"></div>       
+                </div>
+                
+            </div>
+        </div>
+        <!-- END: ACCORDION DEMO -->
+    </div>
+</div>
+<script src='js/scripts/socket.io.js'></script>
+<script>
+
+    var messages = [];
+    var socket = io.connect('http://10.10.1.1:3700');
+    var field = document.getElementById("field");
+    var sendButton = document.getElementById("send");
+    var content = document.getElementById("content");
+    var info = document.getElementById("info");
+    info.innerHTML = "<center><table style='width:100%;text-align:center;'><tr><th colspan='5' style='background:#666;color:#FFF;'>Data Sources </th></tr><tr><td><a href='node2.html' class='button'>Node 2</a></td><td><a href='node3.html' class='button'>Node 3</a></td><td><a href='node4.html' class='button'>Node 4</a></td><td><a href='node5.html' class='button'>Node 5</a></td><td><a href='node6.html' class='button'>Node 6</a></td></tr></table></center>";
+    socket.on('message', function (data) {
+    
+    console.log(data);
+      /*  gauge.value = data.value;
+	gauge.set('title.bottom', data.value+' ºC');
+        gauge.draw();
+//xx        gauge.grow();
+
+        gauge.set('title.top', data.browseName);*/
+        time=new Date(data.timestamp);
+        info.innerHTML = "<center><table style='width:96%;border: 1px solid #666;'><tr><td width='25%' style='background:#666;color:#FFF;'>Data Source: </td><td style='border: 1px solid #666;padding:10px;'>" + data.nodeId + "</td></tr><tr><td style='background:#666;color:#FFF;'>Last Timestamp: </td><td style='border: 1px solid #666;padding:10px;'>"+ time+"</td></tr><tr><td style='background:#666;color:#FFF;' colspan='2' style='border: 1px solid #666;'>OPCUA Object received: </td><td></td></tr><tr><td colspan='2' style='border: 1px solid #666;padding:10px;'>"+ JSON.stringify(data.showobj, null, 4); +"</td></tr></table></center>";
+
+
+       // drawGraph(data.value);
+    });
+
+    // sendButton.onclick = function () { var text = field.value;  socket.emit('send', { message: text }); };
+
+</script>

@@ -1,0 +1,66 @@
+[13:56:23 - main] [Cooja.java:3172] [WARN] - JAVA_HOME environment variable not set, Cooja motes may not compile
+[13:56:23 - AWT-EventQueue-0] [Cooja.java:2856] [INFO] - External tools default settings: /external_tools_linux.config
+[13:56:23 - AWT-EventQueue-0] [Cooja.java:2886] [INFO] - External tools user settings: /root/.cooja.user.properties
+[13:56:29 - Thread-0] [Simulation.java:421] [INFO] - Simulation random seed: 123456
+[13:56:29 - Thread-0] [CompileContiki.java:140] [INFO] - > make collect-view-shell.sky TARGET=sky 
+[13:56:30 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:30 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:30 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:30 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:30 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:31 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[13:56:32 - Thread-0] [Visualizer.java:256] [INFO] - Registered external visualizer: org.contikios.cooja.plugins.skins.DGRMVisualizerSkin
+[13:56:38 - read input stream thread] [CollectView.java:237] [FATAL] - The CollectView application died!
+[13:56:42 - Thread-1] [Simulation.java:252] [INFO] - Simulation main loop started, system time: 1505131002610
+[13:56:50 - Thread-1] [Simulation.java:311] [INFO] - Simulation main loop stopped, system time: 1505131010096	Duration: 7486 ms	Simulated time 3890 ms	Ratio 0.5196366550895004
+[13:58:20 - Thread-2] [Simulation.java:252] [INFO] - Simulation main loop started, system time: 1505131100069
+[14:02:47 - Thread-2] [Simulation.java:311] [INFO] - Simulation main loop stopped, system time: 1505131367141	Duration: 267072 ms	Simulated time 267769 ms	Ratio 1.002609783129643
+[14:02:48 - Thread-3] [Simulation.java:421] [INFO] - Simulation random seed: 123456
+[14:02:48 - Thread-3] [CompileContiki.java:140] [INFO] - > make collect-view-shell.sky TARGET=sky 
+[14:02:48 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:49 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:50 - Thread-3] [MspMote.java:235] [INFO] - Loading firmware from: /home/user/contiki/examples/collect/collect-view-shell.sky
+[14:02:54 - read input stream thread] [CollectView.java:237] [FATAL] - The CollectView application died!
+[14:11:34 - Thread-4] [Simulation.java:252] [INFO] - Simulation main loop started, system time: 1505131894594
+[14:12:39 - Thread-4] [Simulation.java:311] [INFO] - Simulation main loop stopped, system time: 1505131959878	Duration: 65284 ms	Simulated time 34663 ms	Ratio 0.5309570492004166

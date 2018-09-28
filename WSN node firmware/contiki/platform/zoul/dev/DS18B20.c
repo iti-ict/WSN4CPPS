@@ -1,0 +1,222 @@
+/**
+ * \ITI, DS18B20 Drivers .c
+ * @{
+ *
+ * \defgroup
+ *
+ * Demonstrates the RE-Mote and DS18B20
+ * @{
+ *
+ * \file
+ *        RE-Mote 
+ *
+ * \author
+ *         Rubén Ponce <rponce@iti.es>
+ */
+
+/*---------------------------------------------------------------------------*/
+#include "contiki.h"
+#include "sys/etimer.h"
+#include "sys/rtimer.h"
+#include <stdio.h>
+#include <stdint.h>
+#include "dev/gpio.h"
+#include "dev/DS18B20.h"
+
+static uint8_t pin = 0; // Predetermined GPIO PIN0
+static uint8_t baseport = 3; // Predetermined GPIO PORT D
+
+//////////////////////////////////////////////////////////////////////////////
+// SET_TEMPERATURE_GPIO - Set the GPIO Pin where the 1-wire sensor is conected
+// Input-> pin_set and baseport_set 
+// pin_set - pin of the GPIO port
+// baseport_set - GPIO port
+
+void set_temperature_GPIO(uint8_t pin_set, uint8_t baseport_set)
+{  
+  pin = pin_set;
+  baseport = baseport_set; 
+
+  #define PIN_MASK   GPIO_PIN_MASK(pin)
+
+  #define PORT_BASE  GPIO_PORT_TO_BASE(baseport) 
+
+  GPIO_SOFTWARE_CONTROL(PORT_BASE, PIN_MASK);
+
+  GPIO_SET_INPUT(PORT_BASE, PIN_MASK);
+
+  GPIO_SET_PIN(PORT_BASE, PIN_MASK);
+}
+//////////////////////////////////////////////////////////////////////////////
+// OW_RESET - performs a reset on the one-wire bus and
+// returns the presence detect. Reset is 480us, so delay
+// value is (480-24)/16 = 28.5 - we use 29. Presence checked
+// another 70us later, so delay is (70-24)/16 = 2.875 - we use 3.
+//
+static char ow_reset(void)
+{
+  char presence;
+    /* And set as output, starting as high */
+  GPIO_SET_OUTPUT(PORT_BASE, PIN_MASK);
+  GPIO_CLR_PIN(PORT_BASE, PIN_MASK); //pull DQ line low
+
+  clock_delay_usec(488);
+  
+  GPIO_SET_PIN(PORT_BASE, PIN_MASK); // allow line to return high
+  GPIO_SET_INPUT(PORT_BASE, PIN_MASK);
+  
+  clock_delay_usec(72);
+  
+  presence = GPIO_READ_PIN(PORT_BASE, PIN_MASK); // get presence signal
+  
+  clock_delay_usec(424);
+  return presence ; // presence signal returned
+
+} // 0=presence, 1 = no part
+
+//////////////////////////////////////////////////////////////////////////////
+// READ_BIT - reads a bit from the one-wire bus. The delay
+// required for a read is 15us, so the DELAY routine won't work.
+//
+static unsigned char read_bit(void)
+{
+  GPIO_SET_OUTPUT(PORT_BASE, PIN_MASK);
+
+  GPIO_CLR_PIN(PORT_BASE, PIN_MASK);  // pull low to start timeslot
+  GPIO_SET_PIN(PORT_BASE, PIN_MASK); // then return high
+
+  GPIO_SET_INPUT(PORT_BASE, PIN_MASK);
+
+  clock_delay_usec(15);
+
+  return GPIO_READ_PIN(PORT_BASE, PIN_MASK); //Return value of line
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// WRITE_BIT - writes a bit to the one-wire bus, passed in bitval.
+//
+static void write_bit(int8_t bitval)
+{
+  GPIO_SET_OUTPUT(PORT_BASE, PIN_MASK);
+  GPIO_CLR_PIN(PORT_BASE, PIN_MASK); // pull low to start timeslot
+
+  if(bitval==1)
+    GPIO_SET_PIN(PORT_BASE, PIN_MASK);// return high if write 1
+
+  clock_delay_usec(104);
+
+  GPIO_SET_PIN(PORT_BASE, PIN_MASK);
+  GPIO_SET_INPUT(PORT_BASE, PIN_MASK);
+}// Delay provides 16us per loop, plus 24us. Therefore delay(5) = 104us
+
+//////////////////////////////////////////////////////////////////////////////
+// READ_BYTE - reads a byte from the one-wire bus.
+//
+static unsigned int read_byte(void)
+{
+  int8_t i;
+  unsigned int value = 0;
+
+  for (i=0;i<8;i++)
+  {
+    if(read_bit()) value|=0x01<<i; // reads byte in, one byte at a time and then
+    // shifts it left
+    clock_delay_usec(120);
+  }
+
+return value;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// WRITE_BYTE - writes a byte to the one-wire bus.
+//
+static void write_byte(int8_t val)
+{
+  int8_t i;
+  int8_t temp;
+  for (i=0; i<8; i++) // writes byte, one bit at a time
+  {
+    temp = val>>i; // shifts val right 'i' spaces
+    temp &= 0x01; // copy that bit to temp
+    write_bit(temp); // write bit in temp into
+  }
+clock_delay_usec(104);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// READ TEMPERATURE
+// return Counts 
+// It must be multiplied by 0.5 to obtain the value in degrees 
+//
+int16_t Read_Temperature(void)
+{
+  uint16_t temp_hex, temp_c;
+  uint8_t temp_lsb, temp_msb;
+  uint8_t k;
+
+#if DEBUG
+  uint16_t port = 0
+  switch(PORT_BASE) // to put where is the measure 
+  {
+    case GPIO_A_BASE:
+    port = 0x0A;
+    break;
+
+    case GPIO_B_BASE:
+    port = 0x0B;
+    break;
+    
+    case GPIO_C_BASE:
+    port = 0x0C;
+    break;
+    
+    case GPIO_D_BASE:
+    port = 0x0D;
+    break;
+    
+    default: 
+    port = 0xFF;
+    break;
+  }
+    printf("\n Measure in PORT_BASE =  %X, PIN_MASK = %d \n", port, pin);
+#endif
+
+  ow_reset();
+  write_byte(0xCC); //Skip ROM
+  write_byte(0x44); // Start Conversion
+
+  clock_delay_usec(104);
+  
+  ow_reset();
+  write_byte(0xCC); // Skip ROM
+  write_byte(0xBE); // Read Scratch Pad
+
+  for (k=0;k<9;k++){get[k]=read_byte();} // Reading byte
+
+  // Conversion 
+
+  temp_msb = get[1]; // Sign byte + lsbit
+  temp_lsb = get[0]; // Temp data plus lsb
+
+  if (temp_msb >= 0x80)
+  {
+    temp_hex = temp_lsb;
+    temp_hex |= temp_msb << 8;
+    temp_hex = ~temp_hex;
+    temp_c = temp_hex & 0x07F8; // & 00000111 11111111 11111111 11111000
+    temp_c = temp_c >> 3; // move 3 bits ->
+    temp_c = temp_c * (-1);
+    //temp_c = -(temp_c/2);  // equal to *0.5 degrees per count
+  } // twos complement  
+
+  else if (temp_msb <= 0x80)
+  {
+    temp_hex = temp_lsb;
+    temp_hex |= temp_msb << 8;
+    temp_c = temp_hex & 0x07F8; // Last 3 bits udefined. & 00000111 11111111 11111111 11111000
+    temp_c = temp_c >> 3; // move 3 bits -> 
+    //temp_c = temp_c/2;  // equal to *0.5 degrees per count
+  } // shift to get whole degree 
+
+    return temp_c;
+}
